@@ -22,10 +22,6 @@ of both agents are used to compute the regret, which is used to train the
 adversary and the agents.
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 from absl import logging
 
 import numpy as np
@@ -55,11 +51,11 @@ class AdversarialDriver(object):
 
     Args:
       env: A tf_environment.Base environment.
-      agent: An AgentTrainPackage for the main learner agent.
-      adversary_agent: An AgentTrainPackage for the second agent, the
+      agent: ("protagonist") An AgentTrainPackage for the main learner agent.
+      adversary_agent: ("antagonist") An AgentTrainPackage for the second agent, the
         adversary's ally. This can be None if using an unconstrained adversary
         environment.
-      adversary_env: An AgentTrainPackage for the agent that controls the
+      adversary_env: ("adversary") An AgentTrainPackage for the agent that controls the
         environment, learning to set parameters of the environment to decrease
         the agent's score relative to the adversary_agent. Can be None if using
         domain randomization.
