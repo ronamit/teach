@@ -343,7 +343,8 @@ def train_eval(
           disable_tf_function=not use_tf_functions)
 
     def train_step():
-      trajectories = replay_buffer.gather_all()
+      # trajectories = replay_buffer.gather_all()
+      trajectories = replay_buffer.as_dataset(single_deterministic_pass=True)
       return tf_agent.train(experience=trajectories)
 
     if use_tf_functions:
