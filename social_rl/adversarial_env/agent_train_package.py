@@ -251,8 +251,8 @@ class AgentTrainPackage(object):
     Returns:
       A TF-Agents Trajectory object with all experienced trajectories.
     """
-    # trajectories = self.replay_buffer.gather_all()
-    trajectories = self.replay_buffer.as_dataset(single_deterministic_pass=True)
+    trajectories = self.replay_buffer.gather_all()
+    # trajectories = self.replay_buffer.as_dataset(single_deterministic_pass=True)
 
     if not self.replace_reward:
       return trajectories
