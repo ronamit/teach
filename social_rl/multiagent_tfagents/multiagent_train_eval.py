@@ -28,10 +28,6 @@ python -m multiagent_train_eval.py --root_dir=/tmp/multigrid/ppo/
 ```
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import functools
 import math
 import os
