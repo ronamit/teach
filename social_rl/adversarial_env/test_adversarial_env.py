@@ -24,7 +24,7 @@ import os
 from absl.testing import parameterized
 import tensorflow as tf  # pylint: disable=g-explicit-tensorflow-version-import
 from tf_agents.system import system_multiprocessing
-
+import tf_agents
 from social_rl.adversarial_env import train_adversarial_env
 
 
@@ -74,4 +74,5 @@ class AdversarialEnvTest(tf.test.TestCase, parameterized.TestCase):
     self.assertGreaterEqual(len(saved_policies), 1)
 
 if __name__ == '__main__':
-  system_multiprocessing.handle_test_main(tf.test.main)
+    tf_agents.system.multiprocessing.enable_interactive_mode()
+    system_multiprocessing.handle_test_main(tf.test.main)
