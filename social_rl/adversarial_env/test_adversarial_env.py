@@ -74,5 +74,4 @@ class AdversarialEnvTest(tf.test.TestCase, parameterized.TestCase):
     self.assertGreaterEqual(len(saved_policies), 1)
 
 if __name__ == '__main__':
-    tf_agents.system.multiprocessing.enable_interactive_mode()
     system_multiprocessing.handle_test_main(tf.test.main)
