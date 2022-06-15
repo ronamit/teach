@@ -277,7 +277,7 @@ def train_eval(
             name=agent_name,
             use_tf_functions=use_tf_functions,
             max_steps=max_steps,
-            replace_reward=(not unconstrained_adversary
+            replace_reward=((not unconstrained_adversary or use_teaching_regret)
                             and agents_learn_with_regret),
             id_num=i,
 
