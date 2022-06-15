@@ -72,6 +72,8 @@ flags.DEFINE_integer('num_eval_episodes', 2,
 flags.DEFINE_boolean('debug', False, 'Turn on debugging and tf functions off.')
 flags.DEFINE_boolean('agent_regret_off', False,
                      'If True, agents will train with normal reward not regret')
+flags.DEFINE_boolean('teaching_regret', False,
+                     'If True, and agent_regret_off==False, agents will train with teaching_regret')
 flags.DEFINE_boolean('unconstrained_adversary', False,
                      'If True, does not use a second agent to constrain the '
                      'adversary environment.')
@@ -117,6 +119,7 @@ def train_eval(
     random_seed=None,
     # PAIRED parameters
     agents_learn_with_regret=True,
+    use_teaching_regret=False,
     non_negative_regret=True,
     unconstrained_adversary=False,
     domain_randomization=False,
@@ -544,6 +547,7 @@ def main(_):
       FLAGS.root_dir,
       env_name=FLAGS.env_name,
       agents_learn_with_regret=not FLAGS.agent_regret_off,
+      use_teaching_regret=FLAGS.teaching_regret,
       unconstrained_adversary=FLAGS.unconstrained_adversary,
       domain_randomization=FLAGS.domain_randomization,
       percent_random_episodes=FLAGS.percent_random_episodes,
