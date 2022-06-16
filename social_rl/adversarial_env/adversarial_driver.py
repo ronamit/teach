@@ -160,8 +160,14 @@ class AdversarialDriver(object):
             env_reward += self.compute_adversary_block_budget(
                 adv_agent_r_max, env_idx)
 
+        #  Compute the "Teaching Regret"
         elif self.use_teaching_regret:
-            pass
+            # for calculating the regret (that will replace the return of the scene generator adversary)
+            # we need to take the reward of the "improved agent" and subtract  the reward of the original agent
+            # the "improved agent"  = the agent’s policy after taking a gradient step and playing the scene again.
+            improved_agent_r_max = 0.0000000
+            env_reward = improved_agent_r_max - agent_r_avg
+
         # Minimax adversary reward.
         else:
             env_reward = -agent_r_avg
