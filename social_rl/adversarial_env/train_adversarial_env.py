@@ -319,6 +319,7 @@ def train_eval(
             use_tf_functions=use_tf_functions,
             max_steps=gym_env.adversary_max_steps,
             replace_reward=True,
+            use_teaching_regret=use_teaching_regret,
             non_negative_regret=non_negative_regret,
             xy_dim=xy_dim,
             id_num=i,

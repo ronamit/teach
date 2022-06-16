@@ -46,6 +46,7 @@ class AgentTrainPackage(object):
                use_tf_functions=True,
                max_steps=250,
                replace_reward=True,
+               use_teaching_regret=False,
                non_negative_regret=False,
                id_num=0,
                block_budget_weight=0.,
