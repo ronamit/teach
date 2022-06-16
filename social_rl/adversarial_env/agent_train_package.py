@@ -34,43 +34,43 @@ from social_rl.multiagent_tfagents import multigrid_networks
 
 
 class AgentTrainPackage(object):
-  """Combines an agent with its policy, replay buffer, and checkpointer."""
+    """Combines an agent with its policy, replay buffer, and checkpointer."""
 
-  def __init__(self,
-               env,
-               global_step,
-               root_dir,
-               step_metrics,
-               name='Agent',
-               is_environment=False,
-               use_tf_functions=True,
-               max_steps=250,
-               replace_reward=True,
-               use_teaching_regret=False,
-               non_negative_regret=False,
-               id_num=0,
-               block_budget_weight=0.,
+    def __init__(self,
+                 env,
+                 global_step,
+                 root_dir,
+                 step_metrics,
+                 name='Agent',
+                 is_environment=False,
+                 use_tf_functions=True,
+                 max_steps=250,
+                 replace_reward=True,
+                 use_teaching_regret=False,
+                 non_negative_regret=False,
+                 id_num=0,
+                 block_budget_weight=0.,
 
-               # Architecture hparams
-               use_rnn=True,
-               learning_rate=1e-4,
-               actor_fc_layers=(32, 32),
-               value_fc_layers=(32, 32),
-               lstm_size=(128,),
-               conv_filters=8,
-               conv_kernel=3,
-               scalar_fc=5,
-               entropy_regularization=0.,
-               xy_dim=None,
+                 # Architecture hparams
+                 use_rnn=True,
+                 learning_rate=1e-4,
+                 actor_fc_layers=(32, 32),
+                 value_fc_layers=(32, 32),
+                 lstm_size=(128,),
+                 conv_filters=8,
+                 conv_kernel=3,
+                 scalar_fc=5,
+                 entropy_regularization=0.,
+                 xy_dim=None,
 
-               # Training & logging settings
-               num_epochs=25,
-               num_eval_episodes=5,
-               num_parallel_envs=5,
-               replay_buffer_capacity=1001,
-               debug_summaries=True,
-               summarize_grads_and_vars=True,):
-    """Initializes agent, replay buffer, metrics, and checkpointing.
+                 # Training & logging settings
+                 num_epochs=25,
+                 num_eval_episodes=5,
+                 num_parallel_envs=5,
+                 replay_buffer_capacity=1001,
+                 debug_summaries=True,
+                 summarize_grads_and_vars=True, ):
+        """Initializes agent, replay buffer, metrics, and checkpointing.
 
     Args:
       env: An AdversarialTfPyEnvironment with specs and advesary specs.
@@ -120,164 +120,164 @@ class AgentTrainPackage(object):
       summarize_grads_and_vars: If True, logs gradient norms and variances in
         PPO agent.
     """
-    self.name = name
-    self.id = id_num
-    self.max_steps = max_steps
-    self.is_environment = is_environment
-    self.replace_reward = replace_reward
-    self.non_negative_regret = non_negative_regret
-    self.block_budget_weight = block_budget_weight
+        self.name = name
+        self.id = id_num
+        self.max_steps = max_steps
+        self.is_environment = is_environment
+        self.replace_reward = replace_reward
+        self.non_negative_regret = non_negative_regret
+        self.block_budget_weight = block_budget_weight
 
-    with tf.name_scope(self.name):
-      self.optimizer = tf.compat.v1.train.AdamOptimizer(
-          learning_rate=learning_rate)
+        with tf.name_scope(self.name):
+            self.optimizer = tf.compat.v1.train.AdamOptimizer(
+                learning_rate=learning_rate)
 
-      logging.info('\tCalculating specs and building networks...')
-      if is_environment:
-        self.time_step_spec = env.adversary_time_step_spec
-        self.action_spec = env.adversary_action_spec
-        self.observation_spec = env.adversary_observation_spec
+            logging.info('\tCalculating specs and building networks...')
+            if is_environment:
+                self.time_step_spec = env.adversary_time_step_spec
+                self.action_spec = env.adversary_action_spec
+                self.observation_spec = env.adversary_observation_spec
 
-        (self.actor_net,
-         self.value_net) = multigrid_networks.construct_multigrid_networks(
-             self.observation_spec, self.action_spec, use_rnns=use_rnn,
-             actor_fc_layers=actor_fc_layers, value_fc_layers=value_fc_layers,
-             lstm_size=lstm_size, conv_filters=conv_filters,
-             conv_kernel=conv_kernel, scalar_fc=scalar_fc,
-             scalar_name='time_step',
-             scalar_dim=self.observation_spec['time_step'].maximum + 1,
-             random_z=True, xy_dim=xy_dim)
-      else:
-        self.time_step_spec = env.time_step_spec()
-        self.action_spec = env.action_spec()
-        self.observation_spec = env.observation_spec()
+                (self.actor_net,
+                 self.value_net) = multigrid_networks.construct_multigrid_networks(
+                    self.observation_spec, self.action_spec, use_rnns=use_rnn,
+                    actor_fc_layers=actor_fc_layers, value_fc_layers=value_fc_layers,
+                    lstm_size=lstm_size, conv_filters=conv_filters,
+                    conv_kernel=conv_kernel, scalar_fc=scalar_fc,
+                    scalar_name='time_step',
+                    scalar_dim=self.observation_spec['time_step'].maximum + 1,
+                    random_z=True, xy_dim=xy_dim)
+            else:
+                self.time_step_spec = env.time_step_spec()
+                self.action_spec = env.action_spec()
+                self.observation_spec = env.observation_spec()
 
-        (self.actor_net,
-         self.value_net) = multigrid_networks.construct_multigrid_networks(
-             self.observation_spec, self.action_spec, use_rnns=use_rnn,
-             actor_fc_layers=actor_fc_layers, value_fc_layers=value_fc_layers,
-             lstm_size=lstm_size, conv_filters=conv_filters,
-             conv_kernel=conv_kernel, scalar_fc=scalar_fc)
+                (self.actor_net,
+                 self.value_net) = multigrid_networks.construct_multigrid_networks(
+                    self.observation_spec, self.action_spec, use_rnns=use_rnn,
+                    actor_fc_layers=actor_fc_layers, value_fc_layers=value_fc_layers,
+                    lstm_size=lstm_size, conv_filters=conv_filters,
+                    conv_kernel=conv_kernel, scalar_fc=scalar_fc)
 
-      self.tf_agent = ppo_clip_agent.PPOClipAgent(
-          self.time_step_spec,
-          self.action_spec,
-          self.optimizer,
-          actor_net=self.actor_net,
-          value_net=self.value_net,
-          entropy_regularization=entropy_regularization,
-          importance_ratio_clipping=0.2,
-          normalize_observations=False,
-          normalize_rewards=False,
-          use_gae=True,
-          num_epochs=num_epochs,
-          debug_summaries=debug_summaries,
-          summarize_grads_and_vars=summarize_grads_and_vars,
-          train_step_counter=global_step)
-      self.tf_agent.initialize()
-      self.eval_policy = self.tf_agent.policy
-      self.collect_policy = self.tf_agent.collect_policy
+            self.tf_agent = ppo_clip_agent.PPOClipAgent(
+                self.time_step_spec,
+                self.action_spec,
+                self.optimizer,
+                actor_net=self.actor_net,
+                value_net=self.value_net,
+                entropy_regularization=entropy_regularization,
+                importance_ratio_clipping=0.2,
+                normalize_observations=False,
+                normalize_rewards=False,
+                use_gae=True,
+                num_epochs=num_epochs,
+                debug_summaries=debug_summaries,
+                summarize_grads_and_vars=summarize_grads_and_vars,
+                train_step_counter=global_step)
+            self.tf_agent.initialize()
+            self.eval_policy = self.tf_agent.policy
+            self.collect_policy = self.tf_agent.collect_policy
 
-      logging.info('\tAllocating replay buffer ...')
-      self.replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
-          self.tf_agent.collect_data_spec,
-          batch_size=num_parallel_envs,
-          max_length=replay_buffer_capacity)
-      logging.info('\t\tRB capacity: %i', self.replay_buffer.capacity)
-      self.final_reward = tf.zeros(shape=(num_parallel_envs), dtype=tf.float32)
-      self.enemy_max = tf.zeros(shape=(num_parallel_envs), dtype=tf.float32)
+            logging.info('\tAllocating replay buffer ...')
+            self.replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
+                self.tf_agent.collect_data_spec,
+                batch_size=num_parallel_envs,
+                max_length=replay_buffer_capacity)
+            logging.info('\t\tRB capacity: %i', self.replay_buffer.capacity)
+            self.final_reward = tf.zeros(shape=(num_parallel_envs), dtype=tf.float32)
+            self.enemy_max = tf.zeros(shape=(num_parallel_envs), dtype=tf.float32)
 
-      # Creates train metrics
-      self.step_metrics = step_metrics
-      self.train_metrics = step_metrics + [
-          tf_metrics.AverageEpisodeLengthMetric(
-              batch_size=num_parallel_envs,
-              name=name+'_AverageEpisodeLength')
-      ]
-      self.eval_metrics = [
-          tf_metrics.AverageEpisodeLengthMetric(
-              batch_size=num_eval_episodes, name=name+'_AverageEpisodeLength')
-      ]
-      if is_environment:
-        self.env_train_metric = adversarial_eval.AdversarialEnvironmentScalar(
-            batch_size=num_parallel_envs, name=name + '_AdversaryReward')
-        self.env_eval_metric = adversarial_eval.AdversarialEnvironmentScalar(
-            batch_size=num_eval_episodes, name=name + '_AdversaryReward')
-      else:
-        self.train_metrics.append(tf_metrics.AverageReturnMetric(
-            batch_size=num_parallel_envs, name=name+'_AverageReturn'))
-        self.eval_metrics.append(tf_metrics.AverageReturnMetric(
-            batch_size=num_eval_episodes, name=name+'_AverageReturn'))
+            # Creates train metrics
+            self.step_metrics = step_metrics
+            self.train_metrics = step_metrics + [
+                tf_metrics.AverageEpisodeLengthMetric(
+                    batch_size=num_parallel_envs,
+                    name=name + '_AverageEpisodeLength')
+            ]
+            self.eval_metrics = [
+                tf_metrics.AverageEpisodeLengthMetric(
+                    batch_size=num_eval_episodes, name=name + '_AverageEpisodeLength')
+            ]
+            if is_environment:
+                self.env_train_metric = adversarial_eval.AdversarialEnvironmentScalar(
+                    batch_size=num_parallel_envs, name=name + '_AdversaryReward')
+                self.env_eval_metric = adversarial_eval.AdversarialEnvironmentScalar(
+                    batch_size=num_eval_episodes, name=name + '_AdversaryReward')
+            else:
+                self.train_metrics.append(tf_metrics.AverageReturnMetric(
+                    batch_size=num_parallel_envs, name=name + '_AverageReturn'))
+                self.eval_metrics.append(tf_metrics.AverageReturnMetric(
+                    batch_size=num_eval_episodes, name=name + '_AverageReturn'))
 
-      self.metrics_group = metric_utils.MetricsGroup(
-          self.train_metrics, name + '_train_metrics')
-      self.observers = self.train_metrics + [self.replay_buffer.add_batch]
+            self.metrics_group = metric_utils.MetricsGroup(
+                self.train_metrics, name + '_train_metrics')
+            self.observers = self.train_metrics + [self.replay_buffer.add_batch]
 
-      self.train_dir = os.path.join(root_dir, 'train', name, str(id_num))
-      self.eval_dir = os.path.join(root_dir, 'eval', name, str(id_num))
-      self.train_checkpointer = common.Checkpointer(
-          ckpt_dir=self.train_dir,
-          agent=self.tf_agent,
-          global_step=global_step,
-          metrics=self.metrics_group,
-          )
-      self.policy_checkpointer = common.Checkpointer(
-          ckpt_dir=os.path.join(self.train_dir, 'policy'),
-          policy=self.eval_policy,
-          global_step=global_step)
-      self.saved_model = policy_saver.PolicySaver(
-          self.eval_policy, train_step=global_step)
-      self.saved_model_dir = os.path.join(
-          root_dir, 'policy_saved_model', name, str(id_num))
+            self.train_dir = os.path.join(root_dir, 'train', name, str(id_num))
+            self.eval_dir = os.path.join(root_dir, 'eval', name, str(id_num))
+            self.train_checkpointer = common.Checkpointer(
+                ckpt_dir=self.train_dir,
+                agent=self.tf_agent,
+                global_step=global_step,
+                metrics=self.metrics_group,
+            )
+            self.policy_checkpointer = common.Checkpointer(
+                ckpt_dir=os.path.join(self.train_dir, 'policy'),
+                policy=self.eval_policy,
+                global_step=global_step)
+            self.saved_model = policy_saver.PolicySaver(
+                self.eval_policy, train_step=global_step)
+            self.saved_model_dir = os.path.join(
+                root_dir, 'policy_saved_model', name, str(id_num))
 
-      self.train_checkpointer.initialize_or_restore()
+            self.train_checkpointer.initialize_or_restore()
 
-      if use_tf_functions:
-        self.tf_agent.train = common.function(self.tf_agent.train,
-                                              autograph=False)
+            if use_tf_functions:
+                self.tf_agent.train = common.function(self.tf_agent.train,
+                                                      autograph=False)
 
-      self.total_loss = None
-      self.extra_loss = None
-      self.loss_divergence_counter = 0
+            self.total_loss = None
+            self.extra_loss = None
+            self.loss_divergence_counter = 0
 
-  def train_step(self):
-    """Collects trajectories and trains the agent on them."""
-    trajectories = self.get_trajectories()
-    with tf.name_scope(self.name):
-      return self.tf_agent.train(experience=trajectories)
+    def train_step(self):
+        """Collects trajectories and trains the agent on them."""
+        trajectories = self.get_trajectories()
+        with tf.name_scope(self.name):
+            return self.tf_agent.train(experience=trajectories)
 
-  def get_trajectories(self):
-    """Retrieves trajectories from replay buffer. Replaces reward if necessary.
+    def get_trajectories(self):
+        """Retrieves trajectories from replay buffer. Replaces reward if necessary.
 
     Returns:
       A TF-Agents Trajectory object with all experienced trajectories.
     """
-    trajectories = self.replay_buffer.gather_all()
-    # trajectories = self.replay_buffer.as_dataset(single_deterministic_pass=True)
+        trajectories = self.replay_buffer.gather_all()
+        # trajectories = self.replay_buffer.as_dataset(single_deterministic_pass=True)
 
-    if not self.replace_reward:
-      return trajectories
+        if not self.replace_reward:
+            return trajectories
 
-    if self.is_environment:
-      idx_remove = tf.where(trajectories.is_last())
-      replaced_reward = tf.sparse.SparseTensor(idx_remove, self.final_reward,
-                                               trajectories.reward.shape)
-      true_reward = tf.sparse.to_dense(replaced_reward, default_value=0.)
-    else:
-      ep_len = trajectories.reward.shape[1]
-      tiled_enemy_max = tf.tile(
-          tf.reshape(self.enemy_max, (-1, 1)), (1, ep_len))
-      true_reward = trajectories.reward - (tiled_enemy_max / ep_len)
+        if self.is_environment:
+            idx_remove = tf.where(trajectories.is_last())
+            replaced_reward = tf.sparse.SparseTensor(idx_remove, self.final_reward,
+                                                     trajectories.reward.shape)
+            true_reward = tf.sparse.to_dense(replaced_reward, default_value=0.)
+        else:
+            ep_len = trajectories.reward.shape[1]
+            tiled_enemy_max = tf.tile(
+                tf.reshape(self.enemy_max, (-1, 1)), (1, ep_len))
+            true_reward = trajectories.reward - (tiled_enemy_max / ep_len)
 
-    return replace_traj_reward(trajectories, true_reward)
+        return replace_traj_reward(trajectories, true_reward)
 
 
 def replace_traj_reward(traj, reward):
-  return trajectory.Trajectory(
-      step_type=traj.step_type,
-      observation=traj.observation,
-      action=traj.action,
-      policy_info=traj.policy_info,
-      next_step_type=traj.next_step_type,
-      reward=reward,
-      discount=traj.discount)
+    return trajectory.Trajectory(
+        step_type=traj.step_type,
+        observation=traj.observation,
+        action=traj.action,
+        policy_info=traj.policy_info,
+        next_step_type=traj.next_step_type,
+        reward=reward,
+        discount=traj.discount)
