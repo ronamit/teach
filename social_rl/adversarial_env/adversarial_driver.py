@@ -46,7 +46,8 @@ class AdversarialDriver(object):
                  disable_tf_function=False,
                  debug=False,
                  combined_population=False,
-                 flexible_protagonist=False):
+                 flexible_protagonist=False,
+                 use_teaching_regret=False):
         """Runs the environment adversary and agents to collect episodes.
 
     Args:
@@ -87,6 +88,7 @@ class AdversarialDriver(object):
         self.adversary_env = adversary_env
         self.combined_population = combined_population
         self.flexible_protagonist = flexible_protagonist
+        self.use_teaching_regret = use_teaching_regret
 
     def run(self, random_episodes=False):
         """Runs 3 policies in same environment: environment, agent 1, agent 2."""
@@ -128,6 +130,10 @@ class AdversarialDriver(object):
             adv_agent_r_avg, adv_agent_r_max, antag_idx = self.run_agent(
                 self.env, self.adversary_agent, self.env.reset_agent, self.env.step)
             train_idxs['adversary_agent'] = [antag_idx]
+        else:
+            antag_idx = None
+            adv_agent_r_max = None
+            adv_agent_r_avg = None
 
         # Use agents' reward to compute and set regret-based rewards for PAIRED.
         # By default, regret = max(antagonist) - mean(protagonist).
@@ -154,6 +160,8 @@ class AdversarialDriver(object):
             env_reward += self.compute_adversary_block_budget(
                 adv_agent_r_max, env_idx)
 
+        elif self.use_teaching_regret:
+            pass
         # Minimax adversary reward.
         else:
             env_reward = -agent_r_avg

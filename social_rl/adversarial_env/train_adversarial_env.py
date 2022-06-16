@@ -364,7 +364,8 @@ def train_eval(
         disable_tf_function=True,  # TODO(natashajaques): enable tf functions
         debug=debug,
         combined_population=combined_population,
-        flexible_protagonist=flexible_protagonist)
+        flexible_protagonist=flexible_protagonist,
+        use_teaching_regret=use_teaching_regret)
     eval_driver = adversarial_driver.AdversarialDriver(
         eval_tf_env,
         agents['agent'],
@@ -375,7 +376,8 @@ def train_eval(
         disable_tf_function=True,  # TODO(natashajaques): enable tf functions
         debug=False,
         combined_population=combined_population,
-        flexible_protagonist=flexible_protagonist)
+        flexible_protagonist=flexible_protagonist,
+        use_teaching_regret=use_teaching_regret)
 
     collect_time = 0
     train_time = 0
