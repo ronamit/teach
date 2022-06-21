@@ -73,7 +73,7 @@ class AgentTrainPackage(object):
         """Initializes agent, replay buffer, metrics, and checkpointing.
 
     Args:
-      env: An AdversarialTfPyEnvironment with specs and advesary specs.
+      env: An AdversarialTfPyEnvironment with specs and adversary specs.
       global_step: A tf variable tracking the global step.
       root_dir: Path to directory where metrics and checkpoints should be saved.
       step_metrics: A list of tf-agents metrics which represent the x-axis

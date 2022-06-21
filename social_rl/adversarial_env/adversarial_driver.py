@@ -164,9 +164,17 @@ class AdversarialDriver(object):
         elif self.use_teaching_regret:
             # for calculating the regret (that will replace the return of the scene generator adversary)
             # we need to take the reward of the "improved agent" and subtract  the reward of the original agent
-            # the "improved agent"  = the agent’s policy after taking a gradient step and playing the scene again.
-            improved_agent_r_max = 0.0000000
-            env_reward = improved_agent_r_max - agent_r_avg
+            # the "improved agent"  =
+
+            # find "improved agent" ( the agent’s policy after taking an RL: update step  using the batch of scenes)
+            new_agent_idx = 0
+            new_agents_list = []  # TODO:  find "improved agent"
+
+            # evaluate utility of "improved agent"
+            new_agent_r_avg, new_agent_r_max, new_agent_idx = self.run_agent(
+                self.env, new_agents_list, self.env.reset_agent, self.env.step, agent_idx=new_agent_idx)
+
+            env_reward = new_agent_r_max - agent_r_avg
 
         # Minimax adversary reward.
         else:
