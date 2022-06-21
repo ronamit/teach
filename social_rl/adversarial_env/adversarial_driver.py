@@ -168,6 +168,10 @@ class AdversarialDriver(object):
 
             # find "improved agent" ( the agent’s policy after taking an RL: update step  using the batch of scenes)
             new_agent_idx = 0
+            new_agent = tf.identity(self.agent)
+
+            trajectories = self.agent.get_trajectories()  # from the agent's replay buffer
+            loss_info = new_agent.train(experience=trajectories)
             new_agents_list = []  # TODO:  find "improved agent"
 
             # evaluate utility of "improved agent"
