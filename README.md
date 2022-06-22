@@ -6,7 +6,7 @@ Please see the README file in the social_rl subdirectory for more details.
 ## Installation
 
 
-*  Install TensorFlow 2[tensorflow](https://www.tensorflow.org/install/pip#step-by-step_instructions)
+*  Install [TensorFlow 2](https://www.tensorflow.org/install/pip#step-by-step_instructions)
 
 
 * Install rest of the requirements $ pip3 install -r social_rl/requirements.txt
