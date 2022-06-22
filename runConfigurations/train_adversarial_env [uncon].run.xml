@@ -6,9 +6,9 @@
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
-    <option name="SDK_HOME" value="sftp://ramit@94.188.199.30:8022/home/ramit/miniconda3/envs/adv/bin/python" />
+    <option name="SDK_HOME" value="" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/social_rl/adversarial_env" />
-    <option name="IS_MODULE_SDK" value="false" />
+    <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
