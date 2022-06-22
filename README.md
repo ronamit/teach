@@ -1,3 +1,4 @@
+The code is based on https://github.com/google-research/google-research/tree/master/social_rl
 
 Please see the README file in the social_rl subdirectory for more details.
 
