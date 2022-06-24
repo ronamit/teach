@@ -47,6 +47,9 @@ from social_rl.adversarial_env import adversarial_env
 from social_rl.adversarial_env import adversarial_env_parallel
 from social_rl.adversarial_env import adversarial_eval
 from social_rl.adversarial_env import agent_train_package
+import tensorflow as tf
+import os
+
 
 flags.DEFINE_string('root_dir', os.getenv('TEST_UNDECLARED_OUTPUTS_DIR'),
                     'Root directory for writing logs/summaries/checkpoints.')
@@ -570,5 +573,7 @@ def main(_):
 
 
 if __name__ == '__main__':
+    print('LD_LIBRARY_PATH == ', os.environ.get("LD_LIBRARY_PATH"))
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
     flags.mark_flag_as_required('root_dir')
     system_multiprocessing.handle_main(lambda _: app.run(main))
