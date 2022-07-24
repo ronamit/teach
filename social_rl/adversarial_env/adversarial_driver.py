@@ -166,14 +166,18 @@ class AdversarialDriver(object):
             # we need to take the reward of the "improved agent" and subtract  the reward of the original agent
 
             #  get the agent's training batches in the experience buffer (gathered by self.run_agent above)
-            trajectories = self.agent.get_trajectories()  # from the agent's replay buffer
+            agent = self.agent[agent_idx]
+            trajectories = agent.get_trajectories()  # from the agent's replay buffer
 
             # get an "improved agent" ( the agent’s policy after taking an RL: update step using the training batch)
-            self.agent.train(experience=trajectories)
+            agent.train_step(experience=trajectories)
+            # agent.replay_buffer.clear()
+
             # TODO: option to keep a copy of the original agent's policy - if we want to keep it fixed
 
             ######  get validation trajectories batch, generated from a frozen adverser_env #####
             # TODO:  Freeze adversary_env
+            # frozen_env = tf.stop_gradient(self.env)
 
             # evaluate the improved agent using the validation trajectories - Run protagonist in generated environment
             improved_agent_r_avg, improved_agent_r_max, agent_idx = self.run_agent(
