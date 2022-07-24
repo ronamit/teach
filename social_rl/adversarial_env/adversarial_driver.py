@@ -167,11 +167,12 @@ class AdversarialDriver(object):
 
             #  get the agent's training batches in the experience buffer (gathered by self.run_agent above)
             agent = self.agent[agent_idx]
-            trajectories = agent.get_trajectories()  # from the agent's replay buffer
+            # trajectories = agent.get_trajectories()  # from the agent's replay buffer
 
             # get an "improved agent" ( the agent’s policy after taking an RL: update step using the training batch)
-            agent.train_step(experience=trajectories)
-            # agent.replay_buffer.clear()
+            # agent.tf_agent.train(experience=trajectories)
+            agent.train_step()
+            agent.replay_buffer.clear()
 
             # TODO: option to keep a copy of the original agent's policy - if we want to keep it fixed
 
