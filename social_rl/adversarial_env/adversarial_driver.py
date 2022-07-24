@@ -167,12 +167,15 @@ class AdversarialDriver(object):
 
             #  get the agent's training batches in the experience buffer (gathered by self.run_agent above)
             agent = self.agent[agent_idx]
-            # trajectories = agent.get_trajectories()  # from the agent's replay buffer
+            trajectories = agent.get_trajectories()  # from the agent's replay buffer
+            # TODO: why the observation have dimensions (4,0) ? the 0 causes error
 
             # get an "improved agent" ( the agent’s policy after taking an RL: update step using the training batch)
             # agent.tf_agent.train(experience=trajectories)
-            agent.total_loss, agent.extra_loss = agent.train_step()
-            agent.replay_buffer.clear()
+            # trajectories = agent.get_trajectories()
+            with tf.name_scope(agent.name + '_improved'):
+                agent.tf_agent.train(experience=trajectories)
+            # agent.replay_buffer.clear()
 
             # TODO: option to keep a copy of the original agent's policy - if we want to keep it fixed
 
@@ -181,10 +184,12 @@ class AdversarialDriver(object):
             # frozen_env = tf.stop_gradient(self.env)
 
             # evaluate the improved agent using the validation trajectories - Run protagonist in generated environment
-            improved_agent_r_avg, improved_agent_r_max, agent_idx = self.run_agent(
-                self.env, self.agent, self.env.reset_agent, self.env.step, agent_idx=train_idxs['agent'])
+            # improved_agent_r_avg, improved_agent_r_max, agent_idx = self.run_agent(
+            #     self.env, self.agent, self.env.reset_agent, self.env.step, agent_idx=train_idxs['agent'])
 
             # TODO: Unfreeze adversary_env
+
+            improved_agent_r_max = 000000000000000
 
             env_reward = improved_agent_r_max - agent_r_avg
 
