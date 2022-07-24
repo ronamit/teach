@@ -165,22 +165,23 @@ class AdversarialDriver(object):
             # for calculating the regret (that will replace the return of the scene generator adversary)
             # we need to take the reward of the "improved agent" and subtract  the reward of the original agent
 
-            # find "improved agent" ( the agent’s policy after taking an RL: update step  using the batch of scenes)
-            new_agent_idx = 0
-            # new_agent = tf.identity(self.agent)
-            # # new_agent = deepcopy(self.agent)
-            # new_agent = self.agent
-            #
-            # trajectories = self.agent.get_trajectories()  # from the agent's replay buffer
-            # loss_info = new_agent.train(experience=trajectories)
-            # new_agents_list = []  # TODO:  find "improved agent"
+            #  get the agent's training batches in the experience buffer (gathered by self.run_agent above)
+            trajectories = self.agent.get_trajectories()  # from the agent's replay buffer
 
-            # # evaluate utility of "improved agent"
-            # new_agent_r_avg, new_agent_r_max, new_agent_idx = self.run_agent(
-            #     self.env, new_agents_list, self.env.reset_agent, self.env.step, agent_idx=new_agent_idx)
+            # get an "improved agent" ( the agent’s policy after taking an RL: update step using the training batch)
+            self.agent.train(experience=trajectories)
+            # TODO: option to keep a copy of the original agent's policy - if we want to keep it fixed
 
-            new_agent_r_max = 0000000000
-            env_reward = new_agent_r_max - agent_r_avg
+            ######  get validation trajectories batch, generated from a frozen adverser_env #####
+            # TODO:  Freeze adversary_env
+
+            # evaluate the improved agent using the validation trajectories - Run protagonist in generated environment
+            improved_agent_r_avg, improved_agent_r_max, agent_idx = self.run_agent(
+                self.env, self.agent, self.env.reset_agent, self.env.step, agent_idx=train_idxs['agent'])
+
+            # TODO: Unfreeze adversary_env
+
+            env_reward = improved_agent_r_max - agent_r_avg
 
         # Minimax adversary reward.
         else:
