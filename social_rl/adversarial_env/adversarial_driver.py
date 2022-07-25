@@ -173,8 +173,8 @@ class AdversarialDriver(object):
             # get an "improved agent" ( the agent’s policy after taking an RL: update step using the training batch)
             # agent.tf_agent.train(experience=trajectories)
             # trajectories = agent.get_trajectories()
-            with tf.name_scope(agent.name + '_improved'):
-                agent.tf_agent.train(experience=trajectories)
+            # with tf.name_scope(agent.name + '_improved'):
+                # agent.tf_agent.train(experience=trajectories)
             # agent.replay_buffer.clear()
 
             # TODO: option to keep a copy of the original agent's policy - if we want to keep it fixed
