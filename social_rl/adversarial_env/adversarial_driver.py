@@ -167,6 +167,8 @@ class AdversarialDriver(object):
 
             #  get the agent's training batches in the experience buffer (gathered by self.run_agent above)
             agent = self.agent[agent_idx]
+
+
             trajectories = agent.get_trajectories()  # from the agent's replay buffer
             # TODO: why the observation have dimensions (4,0) ? the 0 causes error
 
