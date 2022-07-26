@@ -1,4 +1,4 @@
-tensorflow==2.6.0
+tensorflow==2.9.1
 tf-agents==0.9.0
 # gfootball>=2.10.1
 gym==0.17.3
