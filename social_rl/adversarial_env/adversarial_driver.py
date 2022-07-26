@@ -165,7 +165,8 @@ class AdversarialDriver(object):
             # for calculating the regret (that will replace the return of the scene generator adversary)
             # we need to take the reward of the "improved agent" and subtract  the reward of the original agent
             agent = self.agent[agent_idx]
-            trajectories = agent.get_trajectories()   #  get the agent's training batches in the experience buffer (gathered by self.run_agent above)
+            trajectories = agent.get_trajectories()   # get the agent's training batches in the experience buffer (
+            # gathered by self.run_agent above)
             n_trajectories = trajectories.reward.shape[1]
             if n_trajectories == 0:
                 # if the agent has no trajectories yet in the buffer (first episode)
@@ -181,9 +182,10 @@ class AdversarialDriver(object):
                 # frozen_env = tf.stop_gradient(self.env) #  TODO: Freeze adversary_env
                 frozen_env = self.env
 
-                # evaluate the improved agent using the validation trajectories - Run protagonist in generated environment
+                # evaluate the improved agent using the validation trajectories - Run protagonist in generated
+                # environment
                 improved_agent_r_avg, improved_agent_r_max, agent_idx = self.run_agent(
-                    frozen_env, self.agent, frozen_env.reset_agent, frozen_env.step, agent_idx=train_idxs['agent'])
+                    frozen_env, self.agent, frozen_env.reset_agent, frozen_env.step)
                 env_reward = improved_agent_r_max - agent_r_avg
 
         # Minimax adversary reward.
