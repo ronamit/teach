@@ -164,22 +164,36 @@ class AdversarialDriver(object):
         elif self.use_teaching_regret:
             # for calculating the regret (that will replace the return of the scene generator adversary)
             # we need to take the reward of the "improved agent" and subtract  the reward of the original agent
-            # the "improved agent"  =
 
-            # find "improved agent" ( the agent’s policy after taking an RL: update step  using the batch of scenes)
-            new_agent_idx = 0
-            new_agent = tf.identity(self.agent)
-            # new_agent = copy(self.agent)
+            #  get the agent's training batches in the experience buffer (gathered by self.run_agent above)
+            agent = self.agent[agent_idx]
 
-            trajectories = self.agent.get_trajectories()  # from the agent's replay buffer
-            loss_info = new_agent.train(experience=trajectories)
-            new_agents_list = []  # TODO:  find "improved agent"
 
-            # evaluate utility of "improved agent"
-            new_agent_r_avg, new_agent_r_max, new_agent_idx = self.run_agent(
-                self.env, new_agents_list, self.env.reset_agent, self.env.step, agent_idx=new_agent_idx)
+            trajectories = agent.get_trajectories()  # from the agent's replay buffer
+            # TODO: why the observation have dimensions (4,0) ? the 0 causes error
 
-            env_reward = new_agent_r_max - agent_r_avg
+            # get an "improved agent" ( the agent’s policy after taking an RL: update step using the training batch)
+            # agent.tf_agent.train(experience=trajectories)
+            # trajectories = agent.get_trajectories()
+            # with tf.name_scope(agent.name + '_improved'):
+                # agent.tf_agent.train(experience=trajectories)
+            # agent.replay_buffer.clear()
+
+            # TODO: option to keep a copy of the original agent's policy - if we want to keep it fixed
+
+            ######  get validation trajectories batch, generated from a frozen adverser_env #####
+            # TODO:  Freeze adversary_env
+            # frozen_env = tf.stop_gradient(self.env)
+
+            # evaluate the improved agent using the validation trajectories - Run protagonist in generated environment
+            # improved_agent_r_avg, improved_agent_r_max, agent_idx = self.run_agent(
+            #     self.env, self.agent, self.env.reset_agent, self.env.step, agent_idx=train_idxs['agent'])
+
+            # TODO: Unfreeze adversary_env
+
+            improved_agent_r_max = 000000000000000
+
+            env_reward = improved_agent_r_max - agent_r_avg
 
         # Minimax adversary reward.
         else:

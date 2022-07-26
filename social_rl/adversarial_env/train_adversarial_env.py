@@ -47,6 +47,9 @@ from social_rl.adversarial_env import adversarial_env
 from social_rl.adversarial_env import adversarial_env_parallel
 from social_rl.adversarial_env import adversarial_eval
 from social_rl.adversarial_env import agent_train_package
+import tensorflow as tf
+import os
+
 
 flags.DEFINE_string('root_dir', os.getenv('TEST_UNDECLARED_OUTPUTS_DIR'),
                     'Root directory for writing logs/summaries/checkpoints.')
@@ -250,7 +253,7 @@ def train_eval(
         agents = {}
         for agent_name in ['agent', 'adversary_agent']:
             if (agent_name == 'adversary_agent' and
-                    (domain_randomization or unconstrained_adversary or
+                    (domain_randomization or unconstrained_adversary or use_teaching_regret or
                      combined_population)):
                 # Antagonist agent not needed for baselines
                 continue
@@ -275,8 +278,7 @@ def train_eval(
                     name=agent_name,
                     use_tf_functions=use_tf_functions,
                     max_steps=max_steps,
-                    replace_reward=(unconstrained_adversary
-                                    and agents_learn_with_regret),
+                    replace_reward=unconstrained_adversary and agents_learn_with_regret,
                     id_num=i,
 
                     # Architecture hparams
@@ -342,7 +344,7 @@ def train_eval(
                     summarize_grads_and_vars=summarize_grads_and_vars))
 
         logging.info('Creating adversarial drivers')
-        if unconstrained_adversary or domain_randomization or combined_population:
+        if unconstrained_adversary or use_teaching_regret or domain_randomization or combined_population:
             adversary_agent = None
         else:
             adversary_agent = agents['adversary_agent']
@@ -570,5 +572,7 @@ def main(_):
 
 
 if __name__ == '__main__':
+    print('LD_LIBRARY_PATH == ', os.environ.get("LD_LIBRARY_PATH"))
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
     flags.mark_flag_as_required('root_dir')
     system_multiprocessing.handle_main(lambda _: app.run(main))

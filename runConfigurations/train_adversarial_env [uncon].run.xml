@@ -4,11 +4,12 @@
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
+      <env name="LD_LIBRARY_PATH" value="/usr/local/cuda-11.0//usr/local/cuda-11.0/bin:/home/ramit/miniconda3/envs/tf/lib" />
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
-    <option name="SDK_HOME" value="" />
+    <option name="SDK_HOME" value="sftp://ramit@94.188.199.30:8022/home/ramit/miniconda3/envs/tf/bin/python" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/social_rl/adversarial_env" />
-    <option name="IS_MODULE_SDK" value="true" />
+    <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
