@@ -169,7 +169,7 @@ class AdversarialDriver(object):
             n_trajectories = trajectories.reward.shape[1]
             if n_trajectories == 0:
                 # if the agent has no trajectories yet in the buffer (first episode)
-                env_reward = 0.
+                env_reward = 0 * agent_r_avg
             else:
                 # get an "improved agent" (the agent’s policy after taking an RL: update step using the training batch)
                 with tf.name_scope(agent.name):
@@ -178,7 +178,8 @@ class AdversarialDriver(object):
                 # TODO: option to keep a copy of the original agent's policy - if we want to keep it fixed
 
                 # get validation trajectories batch, generated from a frozen adversary_env
-                frozen_env = tf.stop_gradient(self.env) # Freeze adversary_env
+                # frozen_env = tf.stop_gradient(self.env) #  TODO: Freeze adversary_env
+                frozen_env = self.env
 
                 # evaluate the improved agent using the validation trajectories - Run protagonist in generated environment
                 improved_agent_r_avg, improved_agent_r_max, agent_idx = self.run_agent(
